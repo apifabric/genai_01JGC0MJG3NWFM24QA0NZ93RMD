@@ -1,0 +1,126 @@
+// Copy this text, paste to https://dbdiagram.io/d
+// Or, https://databasediagram.com/app
+// Or, view in VSCode with extension: "DBML Live Preview"
+
+Project DBML {
+  Note: '''
+ClientFeedback: This table captures feedback from clients regarding the service provided.
+Owner: This table represents dog owners who use the dog walking services.
+Walk: This table logs each walk taken with details about which dog, which walker, and when.
+Dog: This table represents the dogs being walked by the business.
+DogServiceAssociation: This table is a junction table associating each dog with its services.
+Service: This table defines the types of services offered by the dog walking business.
+Invoice: This table generates invoices for owners based on services and payments.
+InvoiceItem: This table contains each item on an invoice, specifying services and charges.
+Payment: payment information from owners for the dog walking services.
+Schedule: This table schedules the availability of walkers for dog walking.
+Walker: This table represents the employees who walk the dogs.
+WalkerEvaluation: evaluations of walkers based on their performance.
+'''
+}
+
+Table ClientFeedback {
+    id INTEGER [primary key]
+    owner_id INTEGER 
+    walk_id INTEGER 
+    feedback_date DATE 
+    rating INTEGER 
+    comments VARCHAR 
+    }
+
+Table Owner {
+    id INTEGER [primary key]
+    name VARCHAR 
+    contact_number VARCHAR 
+    email VARCHAR 
+    }
+
+Table Walk {
+    id INTEGER [primary key]
+    dog_id INTEGER 
+    walker_id INTEGER 
+    date_time DATETIME 
+    duration INTEGER 
+    }
+
+Table Dog {
+    id INTEGER [primary key]
+    name VARCHAR 
+    breed VARCHAR 
+    owner_id INTEGER 
+    }
+
+Table DogServiceAssociation {
+    id INTEGER [primary key]
+    dog_id INTEGER 
+    service_id INTEGER 
+    }
+
+Table Service {
+    id INTEGER [primary key]
+    name VARCHAR 
+    description VARCHAR 
+    base_rate NUMERIC(10, 2) 
+    }
+
+Table Invoice {
+    id INTEGER [primary key]
+    owner_id INTEGER 
+    total_amount NUMERIC(10, 2) 
+    date_issued DATE 
+    }
+
+Table InvoiceItem {
+    id INTEGER [primary key]
+    invoice_id INTEGER 
+    service_id INTEGER 
+    quantity INTEGER 
+    total_price NUMERIC(10, 2) 
+    }
+
+Table Payment {
+    id INTEGER [primary key]
+    owner_id INTEGER 
+    amount NUMERIC(10, 2) 
+    payment_date DATE 
+    }
+
+Table Schedule {
+    id INTEGER [primary key]
+    walker_id INTEGER 
+    date DATE 
+    start_time DATETIME 
+    end_time DATETIME 
+    }
+
+Table Walker {
+    id INTEGER [primary key]
+    name VARCHAR 
+    contact_number VARCHAR 
+    email VARCHAR 
+    }
+
+Table WalkerEvaluation {
+    id INTEGER [primary key]
+    walker_id INTEGER 
+    evaluation_date DATE 
+    performance_score INTEGER 
+    comments VARCHAR 
+    }
+
+
+
+// Relationships
+    Ref: ClientFeedback.(owner_id) < Owner.(id)
+    Ref: ClientFeedback.(walk_id) < Walk.(id)
+    Ref: Walk.(dog_id) < Dog.(id)
+    Ref: Walk.(walker_id) < Walker.(id)
+    Ref: Dog.(owner_id) < Owner.(id)
+    Ref: DogServiceAssociation.(dog_id) < Dog.(id)
+    Ref: DogServiceAssociation.(service_id) < Service.(id)
+    Ref: Invoice.(owner_id) < Owner.(id)
+    Ref: InvoiceItem.(invoice_id) < Invoice.(id)
+    Ref: InvoiceItem.(service_id) < Service.(id)
+    Ref: Payment.(owner_id) < Owner.(id)
+    Ref: Schedule.(walker_id) < Walker.(id)
+    Ref: WalkerEvaluation.(walker_id) < Walker.(id)

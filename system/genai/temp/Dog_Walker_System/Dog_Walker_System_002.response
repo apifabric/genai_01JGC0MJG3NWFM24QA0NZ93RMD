@@ -1,0 +1,194 @@
+{
+    "models": [
+        {
+            "classname": "Owner",
+            "code": "class Owner(Base):\n    __tablename__ = 'owner'\n    id = Column(Integer, primary_key=True)\n    name = Column(String, nullable=False)\n    contact_number = Column(String, nullable=True)\n    email = Column(String, nullable=True)",
+            "description": "This table represents dog owners who use the dog walking services.",
+            "name": "Owner"
+        },
+        {
+            "classname": "Dog",
+            "code": "class Dog(Base):\n    __tablename__ = 'dog'\n    id = Column(Integer, primary_key=True)\n    name = Column(String, nullable=False)\n    breed = Column(String, nullable=True)\n    owner_id = Column(Integer, ForeignKey('owner.id'), nullable=False)",
+            "description": "This table represents the dogs being walked by the business.",
+            "name": "Dog"
+        },
+        {
+            "classname": "Walker",
+            "code": "class Walker(Base):\n    __tablename__ = 'walker'\n    id = Column(Integer, primary_key=True)\n    name = Column(String, nullable=False)\n    contact_number = Column(String, nullable=True)\n    email = Column(String, nullable=True)",
+            "description": "This table represents the employees who walk the dogs.",
+            "name": "Walker"
+        },
+        {
+            "classname": "Walk",
+            "code": "class Walk(Base):\n    __tablename__ = 'walk'\n    id = Column(Integer, primary_key=True)\n    dog_id = Column(Integer, ForeignKey('dog.id'), nullable=False)\n    walker_id = Column(Integer, ForeignKey('walker.id'), nullable=False)\n    date_time = Column(DateTime, nullable=False)\n    duration = Column(Integer, nullable=False)  # Duration in minutes",
+            "description": "This table logs each walk taken with details about which dog, which walker, and when.",
+            "name": "Walk"
+        },
+        {
+            "classname": "Payment",
+            "code": "class Payment(Base):\n    __tablename__ = 'payment'\n    id = Column(Integer, primary_key=True)\n    owner_id = Column(Integer, ForeignKey('owner.id'), nullable=False)\n    amount = Column(Numeric(10, 2), nullable=False)\n    payment_date = Column(Date, nullable=False)",
+            "description": "This table records payment information from owners for the dog walking services.",
+            "name": "Payment"
+        },
+        {
+            "classname": "Service",
+            "code": "class Service(Base):\n    __tablename__ = 'service'\n    id = Column(Integer, primary_key=True)\n    name = Column(String, nullable=False)\n    description = Column(String, nullable=True)\n    base_rate = Column(Numeric(10, 2), nullable=False)",
+            "description": "This table defines the types of services offered by the dog walking business.",
+            "name": "Service"
+        },
+        {
+            "classname": "DogServiceAssociation",
+            "code": "class DogServiceAssociation(Base):\n    __tablename__ = 'dog_service_association'\n    id = Column(Integer, primary_key=True)\n    dog_id = Column(Integer, ForeignKey('dog.id'), nullable=False)\n    service_id = Column(Integer, ForeignKey('service.id'), nullable=False)",
+            "description": "This table is a junction table associating each dog with its services.",
+            "name": "DogServiceAssociation"
+        },
+        {
+            "classname": "Invoice",
+            "code": "class Invoice(Base):\n    __tablename__ = 'invoice'\n    id = Column(Integer, primary_key=True)\n    owner_id = Column(Integer, ForeignKey('owner.id'), nullable=False)\n    total_amount = Column(Numeric(10, 2), nullable=False)\n    date_issued = Column(Date, nullable=False)",
+            "description": "This table generates invoices for owners based on services and payments.",
+            "name": "Invoice"
+        },
+        {
+            "classname": "InvoiceItem",
+            "code": "class InvoiceItem(Base):\n    __tablename__ = 'invoice_item'\n    id = Column(Integer, primary_key=True)\n    invoice_id = Column(Integer, ForeignKey('invoice.id'), nullable=False)\n    service_id = Column(Integer, ForeignKey('service.id'), nullable=False)\n    quantity = Column(Integer, nullable=False)\n    total_price = Column(Numeric(10, 2), nullable=False)",
+            "description": "This table contains each item on an invoice, specifying services and charges.",
+            "name": "InvoiceItem"
+        },
+        {
+            "classname": "Schedule",
+            "code": "class Schedule(Base):\n    __tablename__ = 'schedule'\n    id = Column(Integer, primary_key=True)\n    walker_id = Column(Integer, ForeignKey('walker.id'), nullable=False)\n    date = Column(Date, nullable=False)\n    start_time = Column(DateTime, nullable=False)\n    end_time = Column(DateTime, nullable=False)",
+            "description": "This table schedules the availability of walkers for dog walking.",
+            "name": "Schedule"
+        },
+        {
+            "classname": "WalkerEvaluation",
+            "code": "class WalkerEvaluation(Base):\n    __tablename__ = 'walker_evaluation'\n    id = Column(Integer, primary_key=True)\n    walker_id = Column(Integer, ForeignKey('walker.id'), nullable=False)\n    evaluation_date = Column(Date, nullable=False)\n    performance_score = Column(Integer, nullable=False)\n    comments = Column(String, nullable=True)",
+            "description": "This table records evaluations of walkers based on their performance.",
+            "name": "WalkerEvaluation"
+        },
+        {
+            "classname": "ClientFeedback",
+            "code": "class ClientFeedback(Base):\n    __tablename__ = 'client_feedback'\n    id = Column(Integer, primary_key=True)\n    owner_id = Column(Integer, ForeignKey('owner.id'), nullable=False)\n    walk_id = Column(Integer, ForeignKey('walk.id'), nullable=False)\n    feedback_date = Column(Date, nullable=False)\n    rating = Column(Integer, nullable=False)\n    comments = Column(String, nullable=True)",
+            "description": "This table captures feedback from clients regarding the service provided.",
+            "name": "ClientFeedback"
+        }
+    ],
+    "rules": [],
+    "test_data": "class TestData(BaseModel):\n    walker_1 = Walker(name=\"John Doe\", contact_number=\"1234567890\", email=\"johndoe@example.com\")\n    walker_2 = Walker(name=\"Jane Smith\", contact_number=\"0987654321\", email=\"janesmith@example.com\")\n    walker_3 = Walker(name=\"Jake Fox\", contact_number=\"1928374650\", email=\"jakefox@example.com\")\n    walker_4 = Walker(name=\"Lara Croft\", contact_number=\"5647382910\", email=\"laracroft@example.com\")\n\n    owner_1 = Owner(name=\"Alice Johnson\", contact_number=\"1122334455\", email=\"alice@example.com\")\n    owner_2 = Owner(name=\"Bob Brown\", contact_number=\"2233445566\", email=\"bob@example.com\")\n    owner_3 = Owner(name=\"Charlie Davis\", contact_number=\"3344556677\", email=\"charlie@example.com\")\n    owner_4 = Owner(name=\"Diana Prince\", contact_number=\"4455667788\", email=\"diana@example.com\")\n\n    dog_1 = Dog(name=\"Rex\", breed=\"Labrador\", owner_id=1)\n    dog_2 = Dog(name=\"Bella\", breed=\"Beagle\", owner_id=2)\n    dog_3 = Dog(name=\"Max\", breed=\"German Shepherd\", owner_id=3)\n    dog_4 = Dog(name=\"Luna\", breed=\"Golden Retriever\", owner_id=4)\n\n    service_1 = Service(name=\"Regular Walk\", description=\"30-minute walk\", base_rate=10.00)\n    service_2 = Service(name=\"Extended Walk\", description=\"60-minute walk\", base_rate=18.00)\n    service_3 = Service(name=\"Training Session\", description=\"30-minute training\", base_rate=15.00)\n    service_4 = Service(name=\"Overnight Stay\", description=\"24-hour stay\", base_rate=50.00)\n\n    payment_1 = Payment(owner_id=1, amount=100.00, payment_date=date(2023, 10, 1))\n    payment_2 = Payment(owner_id=2, amount=75.00, payment_date=date(2023, 10, 2))\n    payment_3 = Payment(owner_id=3, amount=150.00, payment_date=date(2023, 10, 3))\n    payment_4 = Payment(owner_id=4, amount=200.00, payment_date=date(2023, 10, 4))\n\n    walk_1 = Walk(dog_id=1, walker_id=1, date_time=datetime(2023, 10, 5, 9, 30), duration=30)\n    walk_2 = Walk(dog_id=2, walker_id=2, date_time=datetime(2023, 10, 5, 10, 30), duration=60)\n    walk_3 = Walk(dog_id=3, walker_id=3, date_time=datetime(2023, 10, 5, 11, 30), duration=30)\n    walk_4 = Walk(dog_id=4, walker_id=4, date_time=datetime(2023, 10, 5, 12, 30), duration=60)\n\n    invoice_1 = Invoice(owner_id=1, total_amount=100.00, date_issued=date(2023, 10, 1))\n    invoice_2 = Invoice(owner_id=2, total_amount=50.00, date_issued=date(2023, 10, 2))\n    invoice_3 = Invoice(owner_id=3, total_amount=150.00, date_issued=date(2023, 10, 3))\n    invoice_4 = Invoice(owner_id=4, total_amount=200.00, date_issued=date(2023, 10, 4))",
+    "test_data_rows": [
+        {
+            "test_data_row_variable": "walker_1",
+            "code": "walker_1 = Walker(name=\"John Doe\", contact_number=\"1234567890\", email=\"johndoe@example.com\")"
+        },
+        {
+            "test_data_row_variable": "walker_2",
+            "code": "walker_2 = Walker(name=\"Jane Smith\", contact_number=\"0987654321\", email=\"janesmith@example.com\")"
+        },
+        {
+            "test_data_row_variable": "walker_3",
+            "code": "walker_3 = Walker(name=\"Jake Fox\", contact_number=\"1928374650\", email=\"jakefox@example.com\")"
+        },
+        {
+            "test_data_row_variable": "walker_4",
+            "code": "walker_4 = Walker(name=\"Lara Croft\", contact_number=\"5647382910\", email=\"laracroft@example.com\")"
+        },
+        {
+            "test_data_row_variable": "owner_1",
+            "code": "owner_1 = Owner(name=\"Alice Johnson\", contact_number=\"1122334455\", email=\"alice@example.com\")"
+        },
+        {
+            "test_data_row_variable": "owner_2",
+            "code": "owner_2 = Owner(name=\"Bob Brown\", contact_number=\"2233445566\", email=\"bob@example.com\")"
+        },
+        {
+            "test_data_row_variable": "owner_3",
+            "code": "owner_3 = Owner(name=\"Charlie Davis\", contact_number=\"3344556677\", email=\"charlie@example.com\")"
+        },
+        {
+            "test_data_row_variable": "owner_4",
+            "code": "owner_4 = Owner(name=\"Diana Prince\", contact_number=\"4455667788\", email=\"diana@example.com\")"
+        },
+        {
+            "test_data_row_variable": "dog_1",
+            "code": "dog_1 = Dog(name=\"Rex\", breed=\"Labrador\", owner_id=1)"
+        },
+        {
+            "test_data_row_variable": "dog_2",
+            "code": "dog_2 = Dog(name=\"Bella\", breed=\"Beagle\", owner_id=2)"
+        },
+        {
+            "test_data_row_variable": "dog_3",
+            "code": "dog_3 = Dog(name=\"Max\", breed=\"German Shepherd\", owner_id=3)"
+        },
+        {
+            "test_data_row_variable": "dog_4",
+            "code": "dog_4 = Dog(name=\"Luna\", breed=\"Golden Retriever\", owner_id=4)"
+        },
+        {
+            "test_data_row_variable": "service_1",
+            "code": "service_1 = Service(name=\"Regular Walk\", description=\"30-minute walk\", base_rate=10.00)"
+        },
+        {
+            "test_data_row_variable": "service_2",
+            "code": "service_2 = Service(name=\"Extended Walk\", description=\"60-minute walk\", base_rate=18.00)"
+        },
+        {
+            "test_data_row_variable": "service_3",
+            "code": "service_3 = Service(name=\"Training Session\", description=\"30-minute training\", base_rate=15.00)"
+        },
+        {
+            "test_data_row_variable": "service_4",
+            "code": "service_4 = Service(name=\"Overnight Stay\", description=\"24-hour stay\", base_rate=50.00)"
+        },
+        {
+            "test_data_row_variable": "payment_1",
+            "code": "payment_1 = Payment(owner_id=1, amount=100.00, payment_date=date(2023, 10, 1))"
+        },
+        {
+            "test_data_row_variable": "payment_2",
+            "code": "payment_2 = Payment(owner_id=2, amount=75.00, payment_date=date(2023, 10, 2))"
+        },
+        {
+            "test_data_row_variable": "payment_3",
+            "code": "payment_3 = Payment(owner_id=3, amount=150.00, payment_date=date(2023, 10, 3))"
+        },
+        {
+            "test_data_row_variable": "payment_4",
+            "code": "payment_4 = Payment(owner_id=4, amount=200.00, payment_date=date(2023, 10, 4))"
+        },
+        {
+            "test_data_row_variable": "walk_1",
+            "code": "walk_1 = Walk(dog_id=1, walker_id=1, date_time=datetime(2023, 10, 5, 9, 30), duration=30)"
+        },
+        {
+            "test_data_row_variable": "walk_2",
+            "code": "walk_2 = Walk(dog_id=2, walker_id=2, date_time=datetime(2023, 10, 5, 10, 30), duration=60)"
+        },
+        {
+            "test_data_row_variable": "walk_3",
+            "code": "walk_3 = Walk(dog_id=3, walker_id=3, date_time=datetime(2023, 10, 5, 11, 30), duration=30)"
+        },
+        {
+            "test_data_row_variable": "walk_4",
+            "code": "walk_4 = Walk(dog_id=4, walker_id=4, date_time=datetime(2023, 10, 5, 12, 30), duration=60)"
+        },
+        {
+            "test_data_row_variable": "invoice_1",
+            "code": "invoice_1 = Invoice(owner_id=1, total_amount=100.00, date_issued=date(2023, 10, 1))"
+        },
+        {
+            "test_data_row_variable": "invoice_2",
+            "code": "invoice_2 = Invoice(owner_id=2, total_amount=50.00, date_issued=date(2023, 10, 2))"
+        },
+        {
+            "test_data_row_variable": "invoice_3",
+            "code": "invoice_3 = Invoice(owner_id=3, total_amount=150.00, date_issued=date(2023, 10, 3))"
+        },
+        {
+            "test_data_row_variable": "invoice_4",
+            "code": "invoice_4 = Invoice(owner_id=4, total_amount=200.00, date_issued=date(2023, 10, 4))"
+        }
+    ],
+    "test_data_sqlite": "INSERT INTO walker (id, name, contact_number, email) VALUES (1, 'John Doe', '1234567890', 'johndoe@example.com');\nINSERT INTO walker (id, name, contact_number, email) VALUES (2, 'Jane Smith', '0987654321', 'janesmith@example.com');\nINSERT INTO walker (id, name, contact_number, email) VALUES (3, 'Jake Fox', '1928374650', 'jakefox@example.com');\nINSERT INTO walker (id, name, contact_number, email) VALUES (4, 'Lara Croft', '5647382910', 'laracroft@example.com');\n\nINSERT INTO owner (id, name, contact_number, email) VALUES (1, 'Alice Johnson', '1122334455', 'alice@example.com');\nINSERT INTO owner (id, name, contact_number, email) VALUES (2, 'Bob Brown', '2233445566', 'bob@example.com');\nINSERT INTO owner (id, name, contact_number, email) VALUES (3, 'Charlie Davis', '3344556677', 'charlie@example.com');\nINSERT INTO owner (id, name, contact_number, email) VALUES (4, 'Diana Prince', '4455667788', 'diana@example.com');\n\nINSERT INTO dog (id, name, breed, owner_id) VALUES (1, 'Rex', 'Labrador', 1);\nINSERT INTO dog (id, name, breed, owner_id) VALUES (2, 'Bella', 'Beagle', 2);\nINSER...",
+    "name": "Dog_Walker_System"
+}

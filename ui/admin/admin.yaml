@@ -1,0 +1,394 @@
+about:
+  date: December 30, 2024 14:49:30
+  recent_changes: works with modified safrs-react-admin
+  version: 0.0.0
+api_root: '{http_type}://{swagger_host}:{port}/{api}'
+authentication: '{system-default}'
+info:
+  number_relationships: 13
+  number_tables: 12
+info_toggle_checked: true
+resources:
+  ClientFeedback:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: owner_id
+      required: true
+    - name: walk_id
+      required: true
+    - name: feedback_date
+      required: true
+      type: DATE
+    - name: rating
+      required: true
+    - name: comments
+    description: This table captures feedback from clients regarding the service provided.
+    info_list: This table captures feedback from clients regarding the service provided.
+    tab_groups:
+    - direction: toone
+      fks:
+      - owner_id
+      name: owner
+      resource: Owner
+    - direction: toone
+      fks:
+      - walk_id
+      name: walk
+      resource: Walk
+    type: ClientFeedback
+    user_key: id
+  Dog:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: owner_id
+      required: true
+    - name: id
+    - name: breed
+    description: This table represents the dogs being walked by the business.
+    info_list: This table represents the dogs being walked by the business.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - dog_id
+      name: DogServiceAssociationList
+      resource: DogServiceAssociation
+    - direction: tomany
+      fks:
+      - dog_id
+      name: WalkList
+      resource: Walk
+    - direction: toone
+      fks:
+      - owner_id
+      name: owner
+      resource: Owner
+    type: Dog
+    user_key: name
+  DogServiceAssociation:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: dog_id
+      required: true
+    - name: service_id
+      required: true
+    description: This table is a junction table associating each dog with its services.
+    info_list: This table is a junction table associating each dog with its services.
+    tab_groups:
+    - direction: toone
+      fks:
+      - dog_id
+      name: dog
+      resource: Dog
+    - direction: toone
+      fks:
+      - service_id
+      name: service
+      resource: Service
+    type: DogServiceAssociation
+    user_key: id
+  Invoice:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: owner_id
+      required: true
+    - name: total_amount
+      required: true
+    - name: date_issued
+      required: true
+      type: DATE
+    description: This table generates invoices for owners based on services and payments.
+    info_list: This table generates invoices for owners based on services and payments.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - invoice_id
+      name: InvoiceItemList
+      resource: InvoiceItem
+    - direction: toone
+      fks:
+      - owner_id
+      name: owner
+      resource: Owner
+    type: Invoice
+    user_key: id
+  InvoiceItem:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: invoice_id
+      required: true
+    - name: service_id
+      required: true
+    - name: quantity
+      required: true
+    - name: total_price
+      required: true
+    description: This table contains each item on an invoice, specifying services
+      and charges.
+    info_list: This table contains each item on an invoice, specifying services and
+      charges.
+    tab_groups:
+    - direction: toone
+      fks:
+      - invoice_id
+      name: invoice
+      resource: Invoice
+    - direction: toone
+      fks:
+      - service_id
+      name: service
+      resource: Service
+    type: InvoiceItem
+    user_key: id
+  Owner:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: contact_number
+    - name: email
+    - name: id
+    description: This table represents dog owners who use the dog walking services.
+    info_list: This table represents dog owners who use the dog walking services.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - owner_id
+      name: ClientFeedbackList
+      resource: ClientFeedback
+    - direction: tomany
+      fks:
+      - owner_id
+      name: DogList
+      resource: Dog
+    - direction: tomany
+      fks:
+      - owner_id
+      name: InvoiceList
+      resource: Invoice
+    - direction: tomany
+      fks:
+      - owner_id
+      name: PaymentList
+      resource: Payment
+    type: Owner
+    user_key: name
+  Payment:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: owner_id
+      required: true
+    - name: amount
+      required: true
+    - name: payment_date
+      required: true
+      type: DATE
+    description: This table records payment information from owners for the dog walking
+      services.
+    info_list: This table records payment information from owners for the dog walking
+      services.
+    tab_groups:
+    - direction: toone
+      fks:
+      - owner_id
+      name: owner
+      resource: Owner
+    type: Payment
+    user_key: id
+  Schedule:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: walker_id
+      required: true
+    - name: date
+      required: true
+      type: DATE
+    - name: start_time
+      required: true
+      type: DATETIME
+    - name: end_time
+      required: true
+      type: DATETIME
+    description: This table schedules the availability of walkers for dog walking.
+    info_list: This table schedules the availability of walkers for dog walking.
+    tab_groups:
+    - direction: toone
+      fks:
+      - walker_id
+      name: walker
+      resource: Walker
+    type: Schedule
+    user_key: id
+  Service:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: description
+    - name: base_rate
+      required: true
+    - name: id
+    description: This table defines the types of services offered by the dog walking
+      business.
+    info_list: This table defines the types of services offered by the dog walking
+      business.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - service_id
+      name: DogServiceAssociationList
+      resource: DogServiceAssociation
+    - direction: tomany
+      fks:
+      - service_id
+      name: InvoiceItemList
+      resource: InvoiceItem
+    type: Service
+    user_key: name
+  Walk:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: dog_id
+      required: true
+    - name: walker_id
+      required: true
+    - name: date_time
+      required: true
+      type: DATETIME
+    - name: duration
+      required: true
+    description: This table logs each walk taken with details about which dog, which
+      walker, and when.
+    info_list: This table logs each walk taken with details about which dog, which
+      walker, and when.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - walk_id
+      name: ClientFeedbackList
+      resource: ClientFeedback
+    - direction: toone
+      fks:
+      - dog_id
+      name: dog
+      resource: Dog
+    - direction: toone
+      fks:
+      - walker_id
+      name: walker
+      resource: Walker
+    type: Walk
+    user_key: id
+  Walker:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: contact_number
+    - name: email
+    - name: id
+    description: This table represents the employees who walk the dogs.
+    info_list: This table represents the employees who walk the dogs.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - walker_id
+      name: ScheduleList
+      resource: Schedule
+    - direction: tomany
+      fks:
+      - walker_id
+      name: WalkList
+      resource: Walk
+    - direction: tomany
+      fks:
+      - walker_id
+      name: WalkerEvaluationList
+      resource: WalkerEvaluation
+    type: Walker
+    user_key: name
+  WalkerEvaluation:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: walker_id
+      required: true
+    - name: evaluation_date
+      required: true
+      type: DATE
+    - name: performance_score
+      required: true
+    - name: comments
+    description: This table records evaluations of walkers based on their performance.
+    info_list: This table records evaluations of walkers based on their performance.
+    tab_groups:
+    - direction: toone
+      fks:
+      - walker_id
+      name: walker
+      resource: Walker
+    type: WalkerEvaluation
+    user_key: id
+settings:
+  HomeJS: /admin-app/home.js
+  max_list_columns: 8
+  style_guide:
+    applicationLocales:
+    - en
+    - es
+    currency_symbol: $
+    currency_symbol_position: left
+    date_format: LL
+    decimal_max: '1000000000'
+    decimal_min: '0'
+    decimal_separator: .
+    detail_mode: tab
+    edit_on_mode: dblclick
+    exclude_listpicker: false
+    include_translation: 'false'
+    keycloak_client_id: alsclient
+    keycloak_realm: kcals
+    keycloak_url: http://localhost:8080
+    locale: en
+    max_decimal_digits: '4'
+    min_decimal_digits: '2'
+    new_mode: dialog
+    pick_style: list
+    row_height: small,
+    serviceType: OntimizeEE
+    startSessionPath: /auth/login
+    style: light
+    thousand_separator: ','
+    use_keycloak: 'false'
